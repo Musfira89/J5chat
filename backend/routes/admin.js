@@ -26,10 +26,13 @@ router.post('/generate', async (req, res) => {
     const usage_limit = mode === 'usage' ? usageLimit || 100 : null;
 
     await db.query(
-      `INSERT INTO tokens (token, created_at, mode, expires_at, usage_limit, usage_count)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [token, createdAt, mode, expiresAt, usage_limit, 0]
+      `INSERT INTO tokens 
+       (token, created_at, mode, expires_at, usage_limit, usage_count, used_by_ip, used_at, full_name, email, used_emails, usage_logs)
+       VALUES 
+       ($1, $2, $3, $4, $5, $6, NULL, NULL, NULL, NULL, $7, $8)`,
+      [token, createdAt, mode, expiresAt, usage_limit, 0, [], JSON.stringify([])]
     );
+    
 
     tokens.push({ token, mode });
   }

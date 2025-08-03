@@ -20,7 +20,6 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ContentCopy, Delete, Search } from "@mui/icons-material";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
@@ -120,8 +119,9 @@ const TokenManagement = () => {
     return token.token.toLowerCase().includes(search.toLowerCase());
   });
 
-  const timeBasedTokens = filteredTokens.filter((t) => !t.usageLimit);
-  const sharedTokens = filteredTokens.filter((t) => t.usageLimit);
+  const timeBasedTokens = filteredTokens.filter((t) => t.mode === "time");
+  const sharedTokens = filteredTokens.filter((t) => t.mode === "usage");
+  
 
   return (
     <ThemeProvider theme={muiTheme}>

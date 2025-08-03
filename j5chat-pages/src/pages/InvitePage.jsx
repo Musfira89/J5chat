@@ -46,7 +46,7 @@ const InvitePage = () => {
 
   const handleContinue = async (e) => {
     e.preventDefault();
-
+  
     if (!inviteLink) {
       setToast({
         open: true,
@@ -55,12 +55,12 @@ const InvitePage = () => {
       });
       return;
     }
-
+  
     try {
       const url = new URL(inviteLink);
       const hashParams = new URLSearchParams(url.hash.replace("#/register?", ""));
       const token = hashParams.get("registration_token");
-    
+  
       if (!token) {
         setToast({
           open: true,
@@ -69,44 +69,44 @@ const InvitePage = () => {
         });
         return;
       }
-    
+  
       await api.post("/admin/use-token", {
         token,
         ip,
         fullName,
         email,
       });
-    
+  
+      // ✅ Store token temporarily
+      localStorage.setItem("registration_token", token);
+  
       setToast({
         open: true,
         message: "Token accepted! Redirecting...",
         severity: "success",
       });
-    
+  
       setTimeout(() => {
-        const url = new URL(inviteLink);
-        const hashParams = new URLSearchParams(url.hash.replace("#/register?", ""));
-        const token = hashParams.get("registration_token");
         window.location.href = `https://j5.chat/#/register?registration_token=${token}`;
       }, 1200);
-          } catch (err) {
+    } catch (err) {
       console.error(err);
-    
+  
       const msg =
         err.response?.data?.message ||
         (err.response?.status === 404 && "Token not found") ||
         (err.response?.status === 410 && "Token expired") ||
         (err.response?.status === 403 && "Email mismatch") ||
         "Invalid or already used token.";
-    
+  
       setToast({
         open: true,
         message: msg,
         severity: "error",
       });
     }
-    
   };
+  
   return (
     <Box
       minHeight="100vh"
