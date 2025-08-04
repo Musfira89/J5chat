@@ -30,163 +30,135 @@ import { Logout } from "@mui/icons-material";
 
 
 const TokenManagement = () => {
-  const [tokens, setTokens] = useState([]);
-  const [deletingToken, setDeletingToken] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [detailModal, setDetailModal] = useState(null);
-  const [tab, setTab] = useState("All");
-  const [search, setSearch] = useState("");
-  const [usageLimit, setUsageLimit] = useState(100);
-  const [darkMode, setDarkMode] = useState(false);
+  const [tokens, set_tokens] = useState([]);
+  const [deleting_token, set_deleting_token] = useState(null);
+  const [open, set_open] = useState(false);
+  const [detail_modal, set_detail_modal] = useState(null);
+  const [tab, set_tab] = useState("All");
+  const [search, set_search] = useState("");
+  const [usage_limit, set_usage_limit] = useState(100);
+  const [dark_mode, set_dark_mode] = useState(false);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const is_mobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const muiTheme = createTheme({
+  const mui_theme = createTheme({
     palette: {
-      mode: darkMode ? "dark" : "light",
+      mode: dark_mode ? "dark" : "light",
     },
   });
 
-  const fetchTokens = async () => {
+  const fetch_tokens = async () => {
     const res = await api.get("/admin/tokens");
-    setTokens(res.data);
+    set_tokens(res.data);
   };
 
-  const generateTimeToken = async () => {
+  const generate_time_token = async () => {
     try {
       await api.post("/admin/generate", { count: 1, mode: "time" });
-
-      fetchTokens();
+      fetch_tokens();
       toast.dark("1 time-based token generated");
     } catch {
       toast.error("Failed to generate token");
     }
   };
 
-  const generateUsageToken = async () => {
+  const generate_usage_token = async () => {
     try {
-      await api.post("/admin/generate", {        
+      await api.post("/admin/generate", {
         count: 1,
         mode: "usage",
-        usageLimit,
+        usage_limit,
       });
-      fetchTokens();
+      fetch_tokens();
       toast.dark("1 usage-based shared token generated");
     } catch {
       toast.error("Failed to generate token");
     }
   };
 
-  const confirmDelete = (token) => {
-    setDeletingToken(token);
-    setOpen(true);
+  const confirm_delete = (token) => {
+    set_deleting_token(token);
+    set_open(true);
   };
 
-  const deleteConfirmed = async () => {
-    await api.delete(`/admin/tokens/${deletingToken.token}`
-    );
-    setOpen(false);
-    setDeletingToken(null);
-    fetchTokens();
+  const delete_confirmed = async () => {
+    await api.delete(`/admin/tokens/${deleting_token.token}`);
+    set_open(false);
+    set_deleting_token(null);
+    fetch_tokens();
     toast.dark("Token deleted successfully");
   };
 
   const copy = (token) => {
-    const fullLink = `https://j5.chat/#/register?registration_token=${token}`;
-    navigator.clipboard.writeText(fullLink);
+    const full_link = `https://j5.chat/#/register?registration_token=${token}`;
+    navigator.clipboard.writeText(full_link);
     toast.dark("Invite link copied to clipboard");
   };
 
-  const handleViewDetails = async (tokenString) => {
+  const handle_view_details = async (token_string) => {
     const res = await api.get("/admin/tokens");
-    const updated = res.data.find((t) => t.token === tokenString);
-    setDetailModal(updated);
+    const updated = res.data.find((t) => t.token === token_string);
+    set_detail_modal(updated);
   };
-  const handleLogout = () => {
+
+  const handle_logout = () => {
     window.location.href = "https://j5.chat/custom/#/adminLogin";
   };
-  
-  
+
   useEffect(() => {
-    fetchTokens();
+    fetch_tokens();
   }, []);
 
-  const filteredTokens = tokens.filter((token) => {
+  const filtered_tokens = tokens.filter((token) => {
     const now = new Date();
-    const isExpired = token.expiresAt && new Date(token.expiresAt) < now;
-    const isUsed = !!token.usedAt;
+    const is_expired = token.expires_at && new Date(token.expires_at) < now;
+    const is_used = !!token.used_at;
 
     let status = "Unused";
-    if (isExpired) status = "Expired";
-    else if (isUsed) status = "Used";
+    if (is_expired) status = "Expired";
+    else if (is_used) status = "Used";
 
     if (tab !== "All" && status !== tab) return false;
     return token.token.toLowerCase().includes(search.toLowerCase());
   });
 
-  const timeBasedTokens = filteredTokens.filter((t) => t.mode === "time");
-  const sharedTokens = filteredTokens.filter((t) => t.mode === "usage");
-  
+  const time_based_tokens = filtered_tokens.filter((t) => t.mode === "time");
+  const shared_tokens = filtered_tokens.filter((t) => t.mode === "usage");
 
   return (
-    <ThemeProvider theme={muiTheme}>
-      <Box
-        sx={{
-          p: 4,
-          backgroundColor: "background.default",
-          color: "text.primary",
-          minHeight: "100vh",
-        }}
-      >
-        <ToastContainer theme={darkMode ? "dark" : "light"} />
+    <ThemeProvider theme={mui_theme}>
+      <Box sx={{ p: 4, backgroundColor: "background.default", color: "text.primary", minHeight: "100vh" }}>
+        <ToastContainer theme={dark_mode ? "dark" : "light"} />
 
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={3}
-        >
-          <Typography variant="h5" fontWeight={600}>
-            API Tokens
-          </Typography>
+        {/* Header */}
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+          <Typography variant="h5" fontWeight={600}>API Tokens</Typography>
           <Box display="flex" alignItems="center" gap={1}>
-  <IconButton onClick={() => setDarkMode(!darkMode)}>
-    {darkMode ? <Brightness7 /> : <Brightness4 />}
-  </IconButton>
-  <Tooltip title="Logout">
-    <IconButton onClick={handleLogout} color="error">
-      <Logout />
-    </IconButton>
-  </Tooltip>
-</Box>
-
+            <IconButton onClick={() => set_dark_mode(!dark_mode)}>
+              {dark_mode ? <Brightness7 /> : <Brightness4 />}
+            </IconButton>
+            <Tooltip title="Logout">
+              <IconButton onClick={handle_logout} color="error">
+                <Logout />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
 
         {/* Tabs */}
-        <Tabs
-          value={tab}
-          onChange={(e, newVal) => setTab(newVal)}
-          sx={{ mb: 3 }}
-          variant="scrollable"
-        >
+        <Tabs value={tab} onChange={(e, new_val) => set_tab(new_val)} sx={{ mb: 3 }} variant="scrollable">
           {["All", "Used", "Unused", "Expired"].map((label) => (
             <Tab key={label} value={label} label={label} />
           ))}
         </Tabs>
 
         {/* Actions */}
-        <Box
-          display="flex"
-          flexDirection={isMobile ? "column" : "row"}
-          gap={2}
-          mb={8}
-          flexWrap="wrap"
-        >
+        <Box display="flex" flexDirection={is_mobile ? "column" : "row"} gap={2} mb={8} flexWrap="wrap">
           <TextField
             placeholder="Search by token..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => set_search(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -196,33 +168,19 @@ const TokenManagement = () => {
             }}
             fullWidth
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={generateTimeToken}
-          >
-            Generate 1 Token
-          </Button>
+          <Button variant="contained" color="primary" onClick={generate_time_token}>Generate 1 Token</Button>
           <TextField
             label="Usage Limit"
             type="number"
-            value={usageLimit}
-            onChange={(e) => setUsageLimit(Number(e.target.value))}
+            value={usage_limit}
+            onChange={(e) => set_usage_limit(Number(e.target.value))}
             sx={{ maxWidth: 160 }}
           />
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={generateUsageToken}
-          >
-            Generate Shared Token
-          </Button>
+          <Button variant="outlined" color="primary" onClick={generate_usage_token}>Generate Shared Token</Button>
         </Box>
 
-        {/* Time-Based Tokens Table */}
-        <Typography variant="h6" fontWeight={600} mb={1}>
-          Time-Based (Single Use) Tokens
-        </Typography>
+        {/* Time-Based Tokens */}
+        <Typography variant="h6" fontWeight={600} mb={1}>Time-Based (Single Use) Tokens</Typography>
         <TableContainer component={Paper} sx={{ mb: 5 }}>
           <Table stickyHeader>
             <TableHead>
@@ -236,30 +194,18 @@ const TokenManagement = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {timeBasedTokens.map((token) => (
+              {time_based_tokens.map((token) => (
                 <TableRow key={token.token} hover>
                   <TableCell>{token.token}</TableCell>
-                  <TableCell>{token.createdAt?.split("T")[0]}</TableCell>
+                  <TableCell>{token.created_at?.split("T")[0]}</TableCell>
                   <TableCell>{token.email || "-"}</TableCell>
-                  <TableCell>
-                    {token.usedAt ? token.usedAt.split("T")[0] : "-"}
-                  </TableCell>
-                  <TableCell>{token.usedByIP || "-"}</TableCell>
+                  <TableCell>{token.used_at ? token.used_at.split("T")[0] : "-"}</TableCell>
+                  <TableCell>{token.used_by_ip || "-"}</TableCell>
                   <TableCell align="right">
-                    <Button
-                      size="small"
-                      onClick={() => copy(token.token)}
-                      variant="outlined"
-                      sx={{ mr: 1 }}
-                    >
+                    <Button size="small" onClick={() => copy(token.token)} variant="outlined" sx={{ mr: 1 }}>
                       <ContentCopy sx={{ fontSize: 16, mr: 0.5 }} /> Copy
                     </Button>
-                    <Button
-                      size="small"
-                      onClick={() => confirmDelete(token)}
-                      variant="contained"
-                      color="error"
-                    >
+                    <Button size="small" onClick={() => confirm_delete(token)} variant="contained" color="error">
                       <Delete sx={{ fontSize: 16, mr: 0.5 }} /> Delete
                     </Button>
                   </TableCell>
@@ -269,10 +215,8 @@ const TokenManagement = () => {
           </Table>
         </TableContainer>
 
-        {/* Shared Tokens Table */}
-        <Typography variant="h6" fontWeight={600} mb={1}>
-          Shared (Usage-Based) Tokens
-        </Typography>
+        {/* Shared Tokens */}
+        <Typography variant="h6" fontWeight={600} mb={1}>Shared (Usage-Based) Tokens</Typography>
         <TableContainer component={Paper}>
           <Table stickyHeader>
             <TableHead>
@@ -284,36 +228,19 @@ const TokenManagement = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sharedTokens.map((token) => (
+              {shared_tokens.map((token) => (
                 <TableRow key={token.token} hover>
                   <TableCell>{token.token}</TableCell>
-                  <TableCell>{token.createdAt?.split("T")[0]}</TableCell>
-                  <TableCell>
-                    {token.usageCount || 0} / {token.usageLimit}
-                  </TableCell>
+                  <TableCell>{token.created_at?.split("T")[0]}</TableCell>
+                  <TableCell>{token.usage_count || 0} / {token.usage_limit}</TableCell>
                   <TableCell align="right">
-                    <Button
-                      size="small"
-                      variant="text"
-                      onClick={() => handleViewDetails(token.token)}
-                      sx={{ mr: 1 }}
-                    >
+                    <Button size="small" variant="text" onClick={() => handle_view_details(token.token)} sx={{ mr: 1 }}>
                       View
                     </Button>
-                    <Button
-                      size="small"
-                      onClick={() => copy(token.token)}
-                      variant="outlined"
-                      sx={{ mr: 1 }}
-                    >
+                    <Button size="small" onClick={() => copy(token.token)} variant="outlined" sx={{ mr: 1 }}>
                       <ContentCopy sx={{ fontSize: 16, mr: 0.5 }} /> Copy
                     </Button>
-                    <Button
-                      size="small"
-                      onClick={() => confirmDelete(token)}
-                      variant="contained"
-                      color="error"
-                    >
+                    <Button size="small" onClick={() => confirm_delete(token)} variant="contained" color="error">
                       <Delete sx={{ fontSize: 16, mr: 0.5 }} /> Delete
                     </Button>
                   </TableCell>
@@ -324,117 +251,78 @@ const TokenManagement = () => {
         </TableContainer>
 
         {/* Delete Modal */}
-        <Modal
-          open={open}
-          onClose={() => setOpen(false)}
-          sx={{ backdropFilter: "blur(6px)" }}
-        >
-          <Box
-            sx={{
-              p: 4,
-              backgroundColor: theme.palette.background.paper,
-              borderRadius: 3,
-              boxShadow: 24,
-              maxWidth: 400,
-              mx: "auto",
-              mt: "15vh",
-              color: theme.palette.text.primary,
-            }}
-          >
-            <Typography variant="h6" fontWeight={600} mb={1}>
-              Confirm Deletion
-            </Typography>
+        <Modal open={open} onClose={() => set_open(false)} sx={{ backdropFilter: "blur(6px)" }}>
+          <Box sx={{
+            p: 4, backgroundColor: theme.palette.background.paper, borderRadius: 3,
+            boxShadow: 24, maxWidth: 400, mx: "auto", mt: "15vh", color: theme.palette.text.primary,
+          }}>
+            <Typography variant="h6" fontWeight={600} mb={1}>Confirm Deletion</Typography>
             <Typography variant="body2" mb={3}>
-              Are you sure you want to delete the token:{" "}
-              <strong>{deletingToken?.token}</strong>?
+              Are you sure you want to delete the token: <strong>{deleting_token?.token}</strong>?
             </Typography>
             <Box display="flex" justifyContent="flex-end" gap={2}>
-              <Button onClick={() => setOpen(false)} variant="outlined">
-                Cancel
-              </Button>
-              <Button
-                onClick={deleteConfirmed}
-                variant="contained"
-                color="error"
-              >
-                Delete
-              </Button>
+              <Button onClick={() => set_open(false)} variant="outlined">Cancel</Button>
+              <Button onClick={delete_confirmed} variant="contained" color="error">Delete</Button>
             </Box>
           </Box>
         </Modal>
 
-        {/* Details Modal */}
-        <Modal open={!!detailModal} onClose={() => setDetailModal(null)} sx={{ backdropFilter: "blur(6px)" }}>
-  <Box
-    sx={{
-      p: 5,
-      backgroundColor: "#1e1e1e",
-      borderRadius: 3,
-      boxShadow: 24,
-      maxWidth: 700,
-      mx: "auto",
-      mt: "8vh",
-      color: "#fff",
-    }}
-  >
-    <Typography variant="h5" fontWeight="600" mb={3}>
-      Usage Log:{" "}
-      <Box component="span" fontWeight={500} color="primary.main">
-        {detailModal?.token}
-      </Box>
-    </Typography>
+        {/* View Modal */}
+        <Modal open={!!detail_modal} onClose={() => set_detail_modal(null)} sx={{ backdropFilter: "blur(6px)" }}>
+          <Box sx={{
+            p: 5, backgroundColor: "#1e1e1e", borderRadius: 3, boxShadow: 24,
+            maxWidth: 700, mx: "auto", mt: "8vh", color: "#fff",
+          }}>
+            <Typography variant="h5" fontWeight="600" mb={3}>
+              Usage Log:{" "}
+              <Box component="span" fontWeight={500} color="primary.main">
+                {detail_modal?.token}
+              </Box>
+            </Typography>
 
-    {detailModal?.usageLogs?.length ? (
-      <Table
-        size="small"
-        sx={{
-          border: "1px solid #444",
-          borderRadius: 2,
-          overflow: "hidden",
-          backgroundColor: "#2b2b2b",
-        }}
-      >
-        <TableHead>
-          <TableRow sx={{ backgroundColor: "#333" }}>
-            <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>Email</TableCell>
-            <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>Used At</TableCell>
-            <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>IP Address</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {detailModal.usageLogs.map((log, i) => (
-            <TableRow key={i}>
-              <TableCell sx={{ color: "#ccc" }}>{log.email || "-"}</TableCell>
-              <TableCell sx={{ color: "#ccc" }}>{log.usedAt?.split("T")[0]}</TableCell>
-              <TableCell sx={{ color: "#ccc" }}>{log.usedByIP || "-"}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    ) : (
-      <Typography color="#aaa" mt={2}>
-        No usage data found.
-      </Typography>
-    )}
+            <Typography mb={2}>Usage Count: {detail_modal?.usage_count || 0}</Typography>
 
-    <Box display="flex" justifyContent="flex-end" mt={4}>
-      <Button
-        onClick={() => setDetailModal(null)}
-        variant="outlined"
-        sx={{
-          borderRadius: 2,
-          px: 4,
-          fontWeight: "bold",
-          color: "#fff",
-          borderColor: "#555",
-        }}
-      >
-        Close
-      </Button>
-    </Box>
-  </Box>
-</Modal>
+            {detail_modal?.used_emails?.length > 0 && (
+              <Box mb={2}>
+                <Typography variant="subtitle2">Used Emails:</Typography>
+                <ul>
+                  {detail_modal.used_emails.map((email, i) => (
+                    <li key={i}>{email}</li>
+                  ))}
+                </ul>
+              </Box>
+            )}
 
+            {detail_modal?.usage_logs?.length ? (
+              <Table size="small" sx={{ border: "1px solid #444", borderRadius: 2, overflow: "hidden", backgroundColor: "#2b2b2b" }}>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: "#333" }}>
+                    <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>Email</TableCell>
+                    <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>Used At</TableCell>
+                    <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>IP Address</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {detail_modal.usage_logs.map((log, i) => (
+                    <TableRow key={i}>
+                      <TableCell sx={{ color: "#ccc" }}>{log.email || "-"}</TableCell>
+                      <TableCell sx={{ color: "#ccc" }}>{log.used_at?.split("T")[0]}</TableCell>
+                      <TableCell sx={{ color: "#ccc" }}>{log.used_by_ip || "-"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <Typography color="#aaa" mt={2}>No usage data found.</Typography>
+            )}
+
+            <Box display="flex" justifyContent="flex-end" mt={4}>
+              <Button onClick={() => set_detail_modal(null)} variant="outlined" sx={{
+                borderRadius: 2, px: 4, fontWeight: "bold", color: "#fff", borderColor: "#555"
+              }}>Close</Button>
+            </Box>
+          </Box>
+        </Modal>
       </Box>
     </ThemeProvider>
   );
