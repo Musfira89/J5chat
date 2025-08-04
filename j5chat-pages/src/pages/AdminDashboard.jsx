@@ -17,6 +17,7 @@ import {
   Paper,
   useMediaQuery,
   IconButton,
+  Tooltip
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ContentCopy, Delete, Search } from "@mui/icons-material";
@@ -25,6 +26,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import api from "../../api";
+import { Logout } from "@mui/icons-material";
 
 
 const TokenManagement = () => {
@@ -101,7 +103,11 @@ const TokenManagement = () => {
     const updated = res.data.find((t) => t.token === tokenString);
     setDetailModal(updated);
   };
-
+  const handleLogout = () => {
+    window.location.href = "https://j5.chat/custom/#/adminLogin";
+  };
+  
+  
   useEffect(() => {
     fetchTokens();
   }, []);
@@ -144,9 +150,17 @@ const TokenManagement = () => {
           <Typography variant="h5" fontWeight={600}>
             API Tokens
           </Typography>
-          <IconButton onClick={() => setDarkMode(!darkMode)}>
-            {darkMode ? <Brightness7 /> : <Brightness4 />}
-          </IconButton>
+          <Box display="flex" alignItems="center" gap={1}>
+  <IconButton onClick={() => setDarkMode(!darkMode)}>
+    {darkMode ? <Brightness7 /> : <Brightness4 />}
+  </IconButton>
+  <Tooltip title="Logout">
+    <IconButton onClick={handleLogout} color="error">
+      <Logout />
+    </IconButton>
+  </Tooltip>
+</Box>
+
         </Box>
 
         {/* Tabs */}

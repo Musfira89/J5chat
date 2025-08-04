@@ -16,7 +16,6 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import { motion } from "framer-motion";
 import logo from "../assets/logo.ico";
 import api from "../../api";
@@ -46,7 +45,7 @@ const InvitePage = () => {
 
   const handleContinue = async (e) => {
     e.preventDefault();
-  
+
     if (!inviteLink) {
       setToast({
         open: true,
@@ -55,12 +54,14 @@ const InvitePage = () => {
       });
       return;
     }
-  
+
     try {
       const url = new URL(inviteLink);
-      const hashParams = new URLSearchParams(url.hash.replace("#/register?", ""));
+      const hashParams = new URLSearchParams(
+        url.hash.replace("#/register?", "")
+      );
       const token = hashParams.get("registration_token");
-  
+
       if (!token) {
         setToast({
           open: true,
@@ -69,36 +70,36 @@ const InvitePage = () => {
         });
         return;
       }
-  
+
       await api.post("/admin/use-token", {
         token,
         ip,
         fullName,
         email,
       });
-  
+
       // ✅ Store token temporarily
       localStorage.setItem("registration_token", token);
-  
+
       setToast({
         open: true,
         message: "Token accepted! Redirecting...",
         severity: "success",
       });
-  
+
       setTimeout(() => {
         window.location.href = `https://j5.chat/#/register?registration_token=${token}`;
       }, 1200);
     } catch (err) {
       console.error(err);
-  
+
       const msg =
         err.response?.data?.message ||
         (err.response?.status === 404 && "Token not found") ||
         (err.response?.status === 410 && "Token expired") ||
         (err.response?.status === 403 && "Email mismatch") ||
         "Invalid or already used token.";
-  
+
       setToast({
         open: true,
         message: msg,
@@ -106,7 +107,7 @@ const InvitePage = () => {
       });
     }
   };
-  
+
   return (
     <Box
       minHeight="100vh"
@@ -195,9 +196,9 @@ const InvitePage = () => {
               underline="always"
               sx={{
                 fontSize: "0.90rem",
-                color: "#b71c1c",
+                color: "#000",
                 fontWeight: 500,
-                textDecorationColor: "#b71c1c", 
+                textDecorationColor: "#000",
               }}
             >
               Read Instructions
@@ -237,109 +238,173 @@ const InvitePage = () => {
           {toast.message}
         </Alert>
       </Snackbar>
-
-      {/* Instructions Modal */}
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        sx={{ backdropFilter: "blur(5px)" }}
+        sx={{ backdropFilter: "blur(8px)" }}
       >
         <Box
           sx={{
-            width: "90%",
-            maxWidth: 850,
-            bgcolor: "#fff",
-            borderRadius: 3,
-            p: 4,
+            width: "92%",
+            maxWidth: 860,
             mx: "auto",
-            mt: 6,
-            boxShadow: 24,
-            fontFamily: "Inter, Roboto, sans-serif",
-            position: "relative",
-            maxHeight: "90vh",
+            mt: "8vh",
+            p: { xs: 3, sm: 5 },
+            borderRadius: 4,
+            bgcolor: "background.paper",
+            boxShadow: "0 12px 32px rgba(0,0,0,0.12)",
             overflowY: "auto",
+            maxHeight: "88vh",
+            position: "relative",
           }}
         >
-          {/* Close */}
+          {/* Close Button */}
           <IconButton
             onClick={() => setOpen(false)}
-            sx={{ position: "absolute", top: 16, right: 16 }}
+            sx={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              color: "text.secondary",
+            }}
           >
             <CloseIcon />
           </IconButton>
 
-          {/* Title */}
-          <Typography variant="h5" fontWeight="bold" mb={2} color="text.primary">
-        JOINING Instructions!
-      </Typography>
-          <Divider sx={{ mb: 3 }} />
+          {/* Modal Title */}
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            color="text.primary"
+            mb={1}
+            textAlign="center"
+          >
+            Joining Instructions
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            textAlign="center"
+            mb={4}
+          >
+            Follow the steps below to join the J5.Chat community.
+          </Typography>
 
-          {/* Content */}
-          <Box display="flex" flexDirection="column" gap={2} fontSize="0.95rem">
-            <Typography>
-              <strong>Step 1: Paste Your Invite Link</strong>
-              <br />
-              Paste the link shared by the admin into the box above.
-              <br />
-              Example:{" "}
-              <i>https://j5.chat/#/register?registration_token=J5-XXXXXX</i>
-            </Typography>
+          {/* Section Content */}
+          <Box display="flex" flexDirection="column" gap={4}>
+            {/* STEP 1 */}
+            <Box>
+              <Typography variant="subtitle1" fontWeight={600} mb={0.5}>
+                Step 1: Paste Your Invite Link
+              </Typography>
+              <Typography color="text.secondary" fontSize="14.5px">
+                Enter the link provided by the admin into the input field above.
+                <br />
+                <Typography
+                  component="span"
+                  fontStyle="italic"
+                  fontSize="14px"
+                  color="text.disabled"
+                >
+                  Example:
+                  https://j5.chat/#/register?registration_token=J5-XXXXXX
+                </Typography>
+              </Typography>
+            </Box>
 
-            <Typography>
-              <strong>
-                Step 2: You'll Be Redirected to the Registration Page
-              </strong>
-              <br />
-              After the link is accepted, you’ll be taken into the app (Element
-              Web or Mobile).
-              <br />
-              There, create your account with a username and secure password.
-            </Typography>
+            {/* STEP 2 */}
+            <Box>
+              <Typography variant="subtitle1" fontWeight={600} mb={0.5}>
+                Step 2: Register Your Account
+              </Typography>
+              <Typography color="text.secondary" fontSize="14.5px">
+                After submitting the invite, you'll be redirected to the
+                registration screen. Create your account with a username and a
+                secure password. This step is mandatory.
+              </Typography>
+            </Box>
+            {/* Security Notice */}
+            <Box
+              sx={{
+                borderRadius: 2,
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "dark" ? "#1f1f1f" : "#f8f9fa",
+                px: 3,
+                py: 2.5,
+                border: (theme) =>
+                  `1px solid ${
+                    theme.palette.mode === "dark" ? "#333" : "#e0e0e0"
+                  }`,
+              }}
+            >
+              <Typography fontWeight={600} fontSize={14} mb={0.5}>
+                Important Notice
+              </Typography>
+              <Typography fontSize={14.2} color="text.secondary">
+                Public signups are disabled. This invite link is your only
+                opportunity to register. Please complete your account creation
+                immediately.
+              </Typography>
+            </Box>
 
-            <Typography>
-              🔒 <strong>Note:</strong> Public signups are disabled, so this is
-              your only chance to register.
-              <br />
-              Make sure you complete your account creation right away.
-            </Typography>
+            {/* STEP 3 */}
+            <Box>
+              <Typography variant="subtitle1" fontWeight={600} mb={0.5}>
+                Step 3: Secure Messages with Key Backup
+              </Typography>
+              <Typography color="text.secondary" fontSize="14.5px">
+                After registration, Element will prompt you with:
+                <br />
+                <Typography component="span" fontStyle="italic" fontSize="14px">
+                  “You may lose access to your messages if you don’t back up
+                  your encryption keys.”
+                </Typography>
+                <br />
+                Choose <strong>Start using Key Backup</strong> and follow the
+                instructions. You’ll receive a 12-word secret recovery phrase.
+                Save the phrase securely. Do not share it.
+              </Typography>
+            </Box>
 
-            <Typography>
-              <strong>Step 3: Secure Your Messages with Key Backup</strong>
-              <br />
-              After registration, Element will ask:
-              <br />
-              <i>
-                “You may lose access to your messages if you don’t back up your
-                encryption keys.”
-              </i>
-              <br />
-              Choose <strong>“Start using Key Backup”</strong> and follow the
-              instructions.
-              <br />
-              You’ll receive a 12-word secret recovery phrase.
-              <br />
-              Save it securely (do not share it).
-            </Typography>
-
-            <Typography>
-              <strong>Step 4: Next Time, Just Sign In</strong>
-              <br />
-              Go to 👉 <i>https://j5.chat/#/login</i>
-              <br />
-              Log in with your username and password.
-              <br />
-              If asked, enter your recovery phrase to restore messages.
-            </Typography>
+            {/* STEP 4 */}
+            <Box>
+              <Typography variant="subtitle1" fontWeight={600} mb={0.5}>
+                Step 4: Sign In Later
+              </Typography>
+              <Typography color="text.secondary" fontSize="14.5px">
+                Visit{" "}
+                <Box component="span" fontWeight={500} color="primary.main">
+                  https://j5.chat/#/login
+                </Box>{" "}
+                to log in anytime using your username and password.
+                <br />
+                If needed, enter your recovery phrase to restore messages.
+              </Typography>
+            </Box>
           </Box>
 
-          {/* PDF Button */}
-          <Box mt={4} textAlign="center">
+          {/* PDF Download Button */}
+          <Box mt={5} textAlign="center">
             <Button
-              variant="outlined"
-              startIcon={<DownloadIcon />}
-              href="/instructions.pdf"
+              component="a"
+              href="/custom/Instructions.pdf"
               download
-              sx={{ textTransform: "none", borderRadius: 2, fontWeight: 600 }}
+              target="_blank"
+              rel="noopener"
+              variant="contained"
+              sx={{
+                textTransform: "none",
+                borderRadius: 2,
+                fontWeight: 500,
+                fontSize: 14.5,
+                backgroundColor: "#000",
+                color: "#fff",
+                px: 3.5,
+                py: 1.2,
+                "&:hover": {
+                  backgroundColor: "#222",
+                },
+              }}
             >
               Download as PDF
             </Button>

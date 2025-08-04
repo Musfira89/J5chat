@@ -25,6 +25,7 @@ import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api";
+import { Link as RouterLink } from "react-router-dom";
 
 const Onboard = () => {
   const navigate = useNavigate();
@@ -55,11 +56,11 @@ const Onboard = () => {
     const savedTime = localStorage.getItem("onboard_time");
     const savedEmail = localStorage.getItem("onboard_email");
     const savedName = localStorage.getItem("onboard_name");
-  
+
     if (savedTime && savedEmail && savedName) {
       const diff = Date.now() - parseInt(savedTime);
       const hours = diff / (1000 * 60 * 60);
-  
+
       if (hours < 24) {
         const nameEncoded = encodeURIComponent(savedName);
         const emailEncoded = encodeURIComponent(savedEmail);
@@ -67,19 +68,19 @@ const Onboard = () => {
         return;
       }
     }
-  
+
     fetch("https://api64.ipify.org?format=json")
       .then((res) => res.json())
       .then((data) => setMeta((prev) => ({ ...prev, ip: data.ip })))
       .catch(() => setMeta((prev) => ({ ...prev, ip: "Unavailable" })));
-  
+
     setMeta((prev) => ({
       ...prev,
       browser: navigator.userAgent,
       device: navigator.platform,
     }));
   }, []);
-  
+
   const formik = useFormik({
     initialValues: { fullName: "", email: "", agreed: false },
     validationSchema: Yup.object({
@@ -96,23 +97,25 @@ const Onboard = () => {
         browserInfo: meta.browser,
         deviceInfo: meta.device,
       };
-  
+
       try {
         const res = await api.post("/onboard", payload);
         const data = res.data;
-  
-  
+
         // ✅ Save values in localStorage for 24-hour logic
         localStorage.setItem("onboard_time", Date.now().toString());
         localStorage.setItem("onboard_email", values.email.trim());
         localStorage.setItem("onboard_name", values.fullName.trim());
-  
+
         setMeta((m) => ({ ...m, submitted: true }));
-  
+
         // ✅ Navigate to Invite page
         const nameEncoded = encodeURIComponent(values.fullName.trim());
         const emailEncoded = encodeURIComponent(values.email.trim());
-        setTimeout(() => navigate(`/invite?name=${nameEncoded}&email=${emailEncoded}`), 2000);
+        setTimeout(
+          () => navigate(`/invite?name=${nameEncoded}&email=${emailEncoded}`),
+          2000
+        );
       } catch (err) {
         console.error(err.message);
         alert("Submission failed. Please try again.");
@@ -121,7 +124,6 @@ const Onboard = () => {
       }
     },
   });
-  
 
   if (meta.submitted) {
     return (
@@ -133,8 +135,15 @@ const Onboard = () => {
           justifyContent="center"
           px={2}
         >
-          <Paper elevation={4} sx={{ p: 6, borderRadius: 4, textAlign: "center" }}>
-            <Avatar src={logo} alt="Logo" sx={{ width: 72, height: 72, mx: "auto", mb: 2 }} />
+          <Paper
+            elevation={4}
+            sx={{ p: 6, borderRadius: 4, textAlign: "center" }}
+          >
+            <Avatar
+              src={logo}
+              alt="Logo"
+              sx={{ width: 72, height: 72, mx: "auto", mb: 2 }}
+            />
             <Typography variant="h4" fontWeight="bold" gutterBottom>
               Thank you!
             </Typography>
@@ -155,7 +164,7 @@ const Onboard = () => {
         alignItems="center"
         justifyContent="center"
         px={1}
-        bgcolor="background.default"
+        bgcolor="#f9f9f9"
       >
         <Paper
           elevation={6}
@@ -219,7 +228,12 @@ const Onboard = () => {
               InputProps={{ sx: { height: 50, fontSize: 14 } }}
             />
 
-            <Box mb={3} p={2} bgcolor={darkMode ? "#1e1e1e" : "#f9f9f9"} borderRadius={2}>
+            <Box
+              mb={3}
+              p={2}
+              bgcolor={darkMode ? "#1e1e1e" : "#f9f9f9"}
+              borderRadius={2}
+            >
               <Typography variant="body2" gutterBottom>
                 <strong>IP:</strong> {meta.ip}
               </Typography>
@@ -245,11 +259,11 @@ const Onboard = () => {
               label={
                 <Typography variant="body2">
                   I agree to the{" "}
-                  <Link href="/terms" underline="hover">
+                  <Link component={RouterLink} to="/terms" underline="hover">
                     Terms & Conditions
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" underline="hover">
+                  <Link component={RouterLink} to="/privacy" underline="hover">
                     Privacy Policy
                   </Link>
                   .
@@ -269,7 +283,12 @@ const Onboard = () => {
               variant="contained"
               color="primary"
               disabled={meta.submitting}
-              sx={{ mt: 3, height: 48, fontWeight: "bold", textTransform: "none" }}
+              sx={{
+                mt: 3,
+                height: 48,
+                fontWeight: "bold",
+                textTransform: "none",
+              }}
             >
               {meta.submitting ? (
                 <CircularProgress size={24} color="inherit" />

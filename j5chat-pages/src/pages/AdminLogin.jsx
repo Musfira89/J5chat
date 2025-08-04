@@ -39,7 +39,7 @@ const AdminLogin = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      bgcolor="#e9e9e9"
+      bgcolor="#f9f9f9"
       px={2}
     >
       <Paper
@@ -119,7 +119,7 @@ const AdminLogin = () => {
           mt={4}
           color="text.disabled"
         >
-          &copy; {new Date().getFullYear()} J5Chat Admin Portal
+          &copy; {new Date().getFullYear()} J5Chat Admin Token Portal
         </Typography>
       </Paper>
 

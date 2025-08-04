@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const PrivacyPolicy = () => {
   const navigate = useNavigate();
@@ -19,7 +20,9 @@ const PrivacyPolicy = () => {
         {/* Intro */}
         <section className="mb-8">
           <p className="text-gray-700 leading-relaxed">
-            Your privacy is important to us. This policy explains what data we collect, how we use it, and how we protect your information while using <strong>J5.Chat</strong>.
+            Your privacy is important to us. This policy explains what data we
+            collect, how we use it, and how we protect your information while
+            using <strong>J5.Chat</strong>.
           </p>
         </section>
 
@@ -30,8 +33,13 @@ const PrivacyPolicy = () => {
             content: (
               <ul className="list-disc list-inside mt-2 space-y-1 text-gray-700">
                 <li>Email address (for account-related contact)</li>
-                <li>Phone number (optional, may be used for verification or communication)</li>
-                <li>IP address and device info (for security and diagnostics)</li>
+                <li>
+                  Phone number (optional, may be used for verification or
+                  communication)
+                </li>
+                <li>
+                  IP address and device info (for security and diagnostics)
+                </li>
                 <li>Display name and username</li>
                 <li>Analytics data (e.g., user activity, feature usage)</li>
               </ul>
@@ -41,17 +49,21 @@ const PrivacyPolicy = () => {
             title: "2. How We Use Your Data",
             content: (
               <>
-                <p className="text-gray-700">
-                  We use the collected data to:
-                </p>
+                <p className="text-gray-700">We use the collected data to:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1 text-gray-700">
                   <li>Facilitate account access and communication</li>
                   <li>Monitor system performance and prevent abuse</li>
                   <li>Maintain community safety</li>
-                  <li>Contact users when necessary (e.g., account issues or updates)</li>
+                  <li>
+                    Contact users when necessary (e.g., account issues or
+                    updates)
+                  </li>
                 </ul>
                 <p className="text-gray-700 mt-2">
-                  <em>Note: Contact may occur via third-party platforms like email services or SMS gateways.</em>
+                  <em>
+                    Note: Contact may occur via third-party platforms like email
+                    services or SMS gateways.
+                  </em>
                 </p>
               </>
             ),
@@ -61,10 +73,22 @@ const PrivacyPolicy = () => {
             content: (
               <>
                 <ul className="list-disc list-inside mt-2 space-y-1 text-gray-700">
-                  <li>Direct messages are end-to-end encrypted per Matrix standards.</li>
-                  <li>General message history is retained based on Matrix protocol norms.</li>
-                  <li>Data is stored securely; infrastructure details are not publicly disclosed for security reasons.</li>
-                  <li>Access to user data is strictly limited to server administrators.</li>
+                  <li>
+                    Direct messages are end-to-end encrypted per Matrix
+                    standards.
+                  </li>
+                  <li>
+                    General message history is retained based on Matrix protocol
+                    norms.
+                  </li>
+                  <li>
+                    Data is stored securely; infrastructure details are not
+                    publicly disclosed for security reasons.
+                  </li>
+                  <li>
+                    Access to user data is strictly limited to server
+                    administrators.
+                  </li>
                 </ul>
               </>
             ),
@@ -74,11 +98,15 @@ const PrivacyPolicy = () => {
             content: (
               <>
                 <p className="text-gray-700">
-                  We do not sell or share your personal data with third parties, except:
+                  We do not sell or share your personal data with third parties,
+                  except:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1 text-gray-700">
                   <li>If legally required to comply with applicable law</li>
-                  <li>If necessary to communicate with you (e.g., via messaging services)</li>
+                  <li>
+                    If necessary to communicate with you (e.g., via messaging
+                    services)
+                  </li>
                 </ul>
               </>
             ),
@@ -90,7 +118,10 @@ const PrivacyPolicy = () => {
                 <li>Request to review the data we store about you</li>
                 <li>Request account deletion</li>
                 <li>Report misuse or privacy violations</li>
-                <li>Contact a moderator or admin directly within the J5.Chat server</li>
+                <li>
+                  Contact a moderator or admin directly within the J5.Chat
+                  server
+                </li>
               </ul>
             ),
           },
@@ -104,12 +135,13 @@ const PrivacyPolicy = () => {
         ))}
 
         {/* Back Button */}
-        <div className="mt-12 flex justify-center">
+        <div className="mt-12 flex justify-start">
           <button
-            onClick={() => navigate("/signup")}
-            className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white text-sm font-medium shadow-md hover:bg-blue-700 transition duration-300"
+            onClick={() => (window.location.href = "https://j5.chat/custom/")}
+            className="inline-flex items-center gap-4 px-4 py-2.5 rounded-md bg-black text-white text-sm font-semibold shadow hover:bg-gray-800 transition duration-300"
           >
-            Back to Signup
+            <ArrowBackIcon sx={{ fontSize: 12 }} />
+            Back
           </button>
         </div>
       </div>

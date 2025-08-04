@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Terms = () => {
   const navigate = useNavigate();
@@ -19,8 +20,10 @@ const Terms = () => {
         {/* Section: Intro */}
         <section className="mb-8">
           <p className="text-gray-700 leading-relaxed">
-            Welcome to <strong>J5.Chat</strong>, a Matrix-based community server designed for individuals involved in peptide research. 
-            By accessing or using J5.Chat, you agree to the following terms. If you do not agree, please do not use this service.
+            Welcome to <strong>J5.Chat</strong>, a Matrix-based community server
+            designed for individuals involved in peptide research. By accessing
+            or using J5.Chat, you agree to the following terms. If you do not
+            agree, please do not use this service.
           </p>
         </section>
 
@@ -49,7 +52,9 @@ const Terms = () => {
                   <li>Violate local or international laws</li>
                 </ul>
                 <p className="mt-2">
-                  The moderation team enforces these rules and reserves the right to take immediate action, including banning users who violate them.
+                  The moderation team enforces these rules and reserves the
+                  right to take immediate action, including banning users who
+                  violate them.
                 </p>
               </>
             ),
@@ -79,17 +84,20 @@ const Terms = () => {
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
               {section.title}
             </h2>
-            <div className="text-gray-700 leading-relaxed text-sm">{section.content}</div>
+            <div className="text-gray-700 leading-relaxed text-sm">
+              {section.content}
+            </div>
           </section>
         ))}
 
         {/* Back Button */}
-        <div className="mt-12 flex justify-center">
+        <div className="mt-12 flex justify-start">
           <button
-            onClick={() => navigate("/signup")}
-            className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white text-sm font-medium shadow-md hover:bg-blue-700 transition duration-300"
+            onClick={() => (window.location.href = "https://j5.chat/custom/")}
+            className="inline-flex items-center gap-4 px-4 py-2.5 rounded-md bg-black text-white text-sm font-semibold shadow hover:bg-gray-800 transition duration-300"
           >
-            Back to Signup
+            <ArrowBackIcon sx={{ fontSize: 12 }} />
+            Back
           </button>
         </div>
       </div>
