@@ -159,144 +159,166 @@ const Onboard = () => {
   return (
     <ThemeProvider theme={muiTheme}>
       <Box
-        minHeight="90vh"
+        minHeight="100vh"
         display="flex"
         alignItems="center"
         justifyContent="center"
         px={1}
-        bgcolor="#f9f9f9"
+        bgcolor={darkMode ? "#121212" : "#f4f4f4"}
+        fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
       >
         <Paper
-          elevation={6}
+          elevation={3}
           sx={{
-            maxWidth: 600,
+            maxWidth: 640,
             width: "100%",
-            p: isMobile ? 3 : 5,
-            borderRadius: 4,
+            p: 0,
+            borderRadius: 6,
+            overflow: "hidden",
           }}
         >
           {/* Dark mode toggle */}
-          <Box display="flex" justifyContent="flex-end" mb={2}>
+          <Box display="flex" justifyContent="flex-end" p={2}>
             <IconButton onClick={toggleDarkMode} color="inherit">
               {darkMode ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
           </Box>
 
-          {/* Header */}
-          <Box textAlign="center" mb={4}>
-            <Avatar
-              src={logo}
-              alt="Logo"
-              sx={{ width: 96, height: 96, mx: "auto", mb: 1 }}
-            />
-            <Typography variant="h5" fontWeight="bold" mt={1}>
-              Welcome to J5 Secure Chat
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Please follow the steps below to onboard securely.
-            </Typography>
-          </Box>
-
-          {/* Form */}
-          <form onSubmit={formik.handleSubmit}>
-            <TextField
-              fullWidth
-              label="Full Name"
-              name="fullName"
-              value={formik.values.fullName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.fullName && Boolean(formik.errors.fullName)}
-              helperText={formik.touched.fullName && formik.errors.fullName}
-              size="small"
-              sx={{ mb: 2 }}
-              InputProps={{ sx: { height: 50, fontSize: 14 } }}
-            />
-
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-              size="small"
-              sx={{ mb: 3 }}
-              InputProps={{ sx: { height: 50, fontSize: 14 } }}
-            />
-
-            <Box
-              mb={3}
-              p={2}
-              bgcolor={darkMode ? "#1e1e1e" : "#f9f9f9"}
-              borderRadius={2}
-            >
-              <Typography variant="body2" gutterBottom>
-                <strong>IP:</strong> {meta.ip}
+          {/* Inner form content */}
+          <Box px={isMobile ? 3 : 5} pb={5}>
+            {/* Header */}
+            <Box textAlign="center" mb={4}>
+              <Avatar
+                src={logo}
+                alt="Logo"
+                sx={{ width: 96, height: 96, mx: "auto", mb: 2 }}
+              />
+              <Typography variant="h5" fontWeight="bold">
+                Welcome to J5 Secure Chat
               </Typography>
-              <Typography variant="body2" gutterBottom>
-                <strong>Browser:</strong> {meta.browser}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Device:</strong> {meta.device}
+              <Typography variant="body2" color="text.secondary" mt={1}>
+                Please follow the steps below to onboard securely.
               </Typography>
             </Box>
 
-            <Divider sx={{ my: 3 }} />
+            {/* Form */}
+            <form onSubmit={formik.handleSubmit}>
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Full Name"
+                    name="fullName"
+                    value={formik.values.fullName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.fullName && Boolean(formik.errors.fullName)
+                    }
+                    helperText={
+                      formik.touched.fullName && formik.errors.fullName
+                    }
+                    size="small"
+                    InputProps={{ sx: { height: 48, fontSize: 14 } }}
+                    InputLabelProps={{ sx: { fontSize: 13 } }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
+                    size="small"
+                    InputProps={{ sx: { height: 48, fontSize: 14 } }}
+                    InputLabelProps={{ sx: { fontSize: 13 } }}
+                  />
+                </Grid>
+              </Grid>
 
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="agreed"
-                  checked={formik.values.agreed}
-                  onChange={formik.handleChange}
-                  color="primary"
-                />
-              }
-              label={
-                <Typography variant="body2">
-                  I agree to the{" "}
-                  <Link component={RouterLink} to="/terms" underline="hover">
-                    Terms & Conditions
-                  </Link>{" "}
-                  and{" "}
-                  <Link component={RouterLink} to="/privacy" underline="hover">
-                    Privacy Policy
-                  </Link>
-                  .
+              <Box
+                mb={3}
+                p={2}
+                bgcolor={darkMode ? "#1e1e1e" : "#fafafa"}
+                border="1px solid"
+                borderColor={darkMode ? "#333" : "#ddd"}
+                borderRadius={2}
+                fontSize={13}
+              >
+                <Typography variant="body2" gutterBottom>
+                  <strong>IP:</strong> {meta.ip}
                 </Typography>
-              }
-            />
+                <Typography variant="body2" gutterBottom>
+                  <strong>Browser:</strong> {meta.browser}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Device:</strong> {meta.device}
+                </Typography>
+              </Box>
 
-            {formik.touched.agreed && formik.errors.agreed && (
-              <Alert severity="error" sx={{ mt: 1 }}>
-                {formik.errors.agreed}
-              </Alert>
-            )}
+              <Divider sx={{ my: 3 }} />
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              disabled={meta.submitting}
-              sx={{
-                mt: 3,
-                height: 48,
-                fontWeight: "bold",
-                textTransform: "none",
-              }}
-            >
-              {meta.submitting ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                "Continue"
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="agreed"
+                    checked={formik.values.agreed}
+                    onChange={formik.handleChange}
+                    color="primary"
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    I agree to the{" "}
+                    <Link component={RouterLink} to="/terms" underline="hover">
+                      Terms & Conditions
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      component={RouterLink}
+                      to="/privacy"
+                      underline="hover"
+                    >
+                      Privacy Policy
+                    </Link>
+                    .
+                  </Typography>
+                }
+              />
+
+              {formik.touched.agreed && formik.errors.agreed && (
+                <Alert severity="error" sx={{ mt: 1 }}>
+                  {formik.errors.agreed}
+                </Alert>
               )}
-            </Button>
-          </form>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={meta.submitting}
+                sx={{
+                  mt: 3,
+                  height: 48,
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  fontSize: 15,
+                }}
+              >
+                {meta.submitting ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Continue"
+                )}
+              </Button>
+            </form>
+          </Box>
         </Paper>
       </Box>
     </ThemeProvider>

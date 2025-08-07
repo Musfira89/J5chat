@@ -6,6 +6,7 @@ import PrivacyPolicy from "../src/pages/PrivacyPolicy";
 import InvitePage from "./pages/InvitePage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import Instructions from "./pages/Instructions";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/invite" element={<InvitePage />} />
+        <Route path="/instructions" element={<Instructions />} />
         <Route path="/adminLogin" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>

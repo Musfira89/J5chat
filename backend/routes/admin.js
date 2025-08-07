@@ -130,8 +130,13 @@ router.post("/use-token", async (req, res) => {
       const newUsageCount = (tokenData.usage_count || 0) + 1;
 
       const usageLogs = tokenData.usage_logs || [];
-      usageLogs.push({ email, usedAt: now.toISOString(), usedByIP: ip });
-
+      usageLogs.push({
+        full_name: fullName,
+        email,
+        used_at: now.toISOString(),
+        used_by_ip: ip,
+      });
+      
       await db.query(
         `UPDATE tokens
          SET used_emails = $1, usage_count = $2, usage_logs = $3
