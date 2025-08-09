@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import logo from "../assets/logo.ico";
 import api from "../../api";
 import { Link as RouterLink } from "react-router-dom";
+import Bg from "../assets/Bg.png";
 
 const InvitePage = () => {
   const [open, setOpen] = useState(false);
@@ -115,8 +116,28 @@ const InvitePage = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      bgcolor="#f0f0f0"
       px={2}
+      position="relative"
+      overflow="hidden"
+      sx={{
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url(${Bg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(7px)",
+          zIndex: -2,
+        },
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          backgroundColor: "rgba(0,0,0,0.5)", // black overlay
+          zIndex: -1,
+        },
+      }}
     >
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -133,7 +154,9 @@ const InvitePage = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: 2,
+            gap: 1,
+            backdropFilter: "blur(15px)",
+            backgroundColor: "rgba(255,255,255,0.97)",
           }}
         >
           {/* Logo */}
@@ -141,10 +164,11 @@ const InvitePage = () => {
             src={logo}
             alt="J5Chat Admin"
             sx={{
-              width: 90,
-              height: 90,
+              width: 100,
+              height: 100,
               mb: 1,
               mx: "auto",
+              mt: 2,
             }}
           />
 
@@ -152,7 +176,7 @@ const InvitePage = () => {
           <Typography variant="h5" fontWeight="bold">
             Enter Your Invite Link
           </Typography>
-          <Typography variant="body2" color="text.secondary" mb={2}>
+          <Typography variant="body2" color="text.secondary" mb={4}>
             Paste the link you received to continue
           </Typography>
 
@@ -178,6 +202,10 @@ const InvitePage = () => {
                 borderRadius: 2,
                 textTransform: "none",
                 fontWeight: 600,
+                backgroundColor: "#1a1a1d", // dark black/gray
+                "&:hover": {
+                  backgroundColor: "#000000", // pure black on hover
+                },
               }}
             >
               Continue

@@ -17,15 +17,12 @@ import {
   Link,
   Grid,
   Avatar,
-  IconButton,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
-import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api";
 import { Link as RouterLink } from "react-router-dom";
+import Bg from "../assets/Bg.png";
 
 const Onboard = () => {
   const navigate = useNavigate();
@@ -40,17 +37,11 @@ const Onboard = () => {
     submitting: false,
   });
 
-  const [darkMode, setDarkMode] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
   const muiTheme = createTheme({
     palette: {
-      mode: darkMode ? "dark" : "light",
+      mode: "light", // ✅ Always light mode
     },
   });
-
-  const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   useEffect(() => {
     const savedTime = localStorage.getItem("onboard_time");
@@ -99,17 +90,14 @@ const Onboard = () => {
       };
 
       try {
-        const res = await api.post("/onboard", payload);
-        const data = res.data;
+        await api.post("/onboard", payload);
 
-        // ✅ Save values in localStorage for 24-hour logic
         localStorage.setItem("onboard_time", Date.now().toString());
         localStorage.setItem("onboard_email", values.email.trim());
         localStorage.setItem("onboard_name", values.fullName.trim());
 
         setMeta((m) => ({ ...m, submitted: true }));
 
-        // ✅ Navigate to Invite page
         const nameEncoded = encodeURIComponent(values.fullName.trim());
         const emailEncoded = encodeURIComponent(values.email.trim());
         setTimeout(
@@ -134,10 +122,39 @@ const Onboard = () => {
           alignItems="center"
           justifyContent="center"
           px={2}
+          sx={{
+            position: "relative",
+            overflow: "hidden",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `url(${Bg})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              filter: "blur(7px)",
+              zIndex: -2,
+            },
+            "&::after": {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: -1,
+            },
+          }}
         >
           <Paper
-            elevation={4}
-            sx={{ p: 6, borderRadius: 4, textAlign: "center" }}
+            elevation={6}
+            sx={{
+              p: 6,
+              borderRadius: 4,
+              textAlign: "center",
+              boxShadow: "0 6px 30px rgba(0,0,0,0.2)",
+              backdropFilter: "blur(15px)",
+              WebkitBackdropFilter: "blur(15px)",
+              backgroundColor: "rgba(255,255,255,0.90)",
+            }}
           >
             <Avatar
               src={logo}
@@ -155,7 +172,7 @@ const Onboard = () => {
       </ThemeProvider>
     );
   }
-
+  
   return (
     <ThemeProvider theme={muiTheme}>
       <Box
@@ -164,43 +181,73 @@ const Onboard = () => {
         alignItems="center"
         justifyContent="center"
         px={1}
-        bgcolor={darkMode ? "#121212" : "#f4f4f4"}
-        fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        sx={{
+          position: "relative",
+          overflow: "hidden",
+          fontFamily:
+            "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url(${Bg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "blur(7px)",
+            zIndex: -2,
+          },
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: -1,
+          },
+        }}
       >
         <Paper
-          elevation={3}
+          elevation={6}
           sx={{
             maxWidth: 640,
             width: "100%",
             p: 0,
+            py:2,
             borderRadius: 6,
             overflow: "hidden",
+            boxShadow: "0 6px 30px rgba(0,0,0,0.2)",
+            backdropFilter: "blur(15px)",
+            WebkitBackdropFilter: "blur(15px)",
+            backgroundColor: "rgba(255,255,255,0.97)",
           }}
         >
-          {/* Dark mode toggle */}
-          <Box display="flex" justifyContent="flex-end" p={2}>
-            <IconButton onClick={toggleDarkMode} color="inherit">
-              {darkMode ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
-          </Box>
-
-          {/* Inner form content */}
-          <Box px={isMobile ? 3 : 5} pb={5}>
+          <Box px={5} pb={5}>
             {/* Header */}
             <Box textAlign="center" mb={4}>
               <Avatar
                 src={logo}
                 alt="Logo"
-                sx={{ width: 96, height: 96, mx: "auto", mb: 2 }}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  mx: "auto",
+                  mb: 1,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                  mt: 4,
+                }}
               />
-              <Typography variant="h5" fontWeight="bold">
+              <Typography
+                variant="h5"
+                fontWeight="bold"
+                gutterBottom={false}
+                sx={{ mb: 0.5 }}
+              >
                 Welcome to J5 Secure Chat
               </Typography>
-              <Typography variant="body2" color="text.secondary" mt={1}>
+              <Typography variant="body2" color="text.secondary">
                 Please follow the steps below to onboard securely.
               </Typography>
             </Box>
-
+  
             {/* Form */}
             <form onSubmit={formik.handleSubmit}>
               <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -240,13 +287,13 @@ const Onboard = () => {
                   />
                 </Grid>
               </Grid>
-
+  
               <Box
                 mb={3}
                 p={2}
-                bgcolor={darkMode ? "#1e1e1e" : "#fafafa"}
+                bgcolor="#fafafa"
                 border="1px solid"
-                borderColor={darkMode ? "#333" : "#ddd"}
+                borderColor="#ddd"
                 borderRadius={2}
                 fontSize={13}
               >
@@ -260,9 +307,9 @@ const Onboard = () => {
                   <strong>Device:</strong> {meta.device}
                 </Typography>
               </Box>
-
+  
               <Divider sx={{ my: 3 }} />
-
+  
               <FormControlLabel
                 control={
                   <Checkbox
@@ -279,37 +326,36 @@ const Onboard = () => {
                       Terms & Conditions
                     </Link>{" "}
                     and{" "}
-                    <Link
-                      component={RouterLink}
-                      to="/privacy"
-                      underline="hover"
-                    >
+                    <Link component={RouterLink} to="/privacy" underline="hover">
                       Privacy Policy
                     </Link>
                     .
                   </Typography>
                 }
               />
-
+  
               {formik.touched.agreed && formik.errors.agreed && (
                 <Alert severity="error" sx={{ mt: 1 }}>
                   {formik.errors.agreed}
                 </Alert>
               )}
-
+  
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="primary"
-                disabled={meta.submitting}
                 sx={{
                   mt: 3,
                   height: 48,
                   fontWeight: "bold",
                   textTransform: "none",
                   fontSize: 15,
+                  backgroundColor: "#1a1a1d",
+                  "&:hover": {
+                    backgroundColor: "#000000",
+                  },
                 }}
+                disabled={meta.submitting}
               >
                 {meta.submitting ? (
                   <CircularProgress size={24} color="inherit" />
@@ -323,6 +369,7 @@ const Onboard = () => {
       </Box>
     </ThemeProvider>
   );
+  
 };
 
 export default Onboard;

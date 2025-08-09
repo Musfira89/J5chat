@@ -15,6 +15,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.ico";
 import api from "../../api";
+import Bg from "../assets/Bg.png";
 
 const AdminLogin = () => {
   const [password, setPassword] = useState("");
@@ -25,7 +26,7 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/admin/login", { password });      
+      await api.post("/admin/login", { password });
       setToastOpen(true);
       setTimeout(() => navigate("/admin-dashboard"), 1000);
     } catch (err) {
@@ -34,14 +35,35 @@ const AdminLogin = () => {
   };
 
   return (
-    <Box
-      minHeight="100vh"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      bgcolor="#f9f9f9"
-      px={2}
-    >
+<Box
+  minHeight="100vh"
+  display="flex"
+  justifyContent="center"
+  alignItems="center"
+  sx={{
+    position: "relative",
+    overflow: "hidden",
+    px: 2,
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      backgroundImage: `url(${Bg})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      filter: "blur(7px)",
+      zIndex: -2,
+    },
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      backgroundColor: "rgba(0,0,0,0.5)", // black overlay
+      zIndex: -1,
+    },
+  }}
+>
+
       <Paper
         elevation={6}
         sx={{
@@ -50,15 +72,17 @@ const AdminLogin = () => {
           maxWidth: 500,
           borderRadius: 4,
           textAlign: "center",
-          boxShadow: "0 6px 30px rgba(0,0,0,0.1)",
+          boxShadow: "0 6px 30px rgba(0,0,0,0.2)",
+          backdropFilter: "blur(15px)", // blur effect
+          backgroundColor: "rgba(255,255,255,0.97)",
         }}
       >
         <Avatar
           src={logo}
           alt="J5Chat Admin"
           sx={{
-            width: 90,
-            height: 90,
+            width: 100,
+            height: 100,
             mb: 2,
             mx: "auto",
           }}
@@ -67,7 +91,7 @@ const AdminLogin = () => {
         <Typography variant="h5" fontWeight="bold" mb={1}>
           J5Chat Admin Panel
         </Typography>
-        <Typography variant="body2" color="text.secondary" mb={3}>
+        <Typography variant="body2" color="text.secondary" mb={4}>
           Authorized access only
         </Typography>
 
@@ -107,6 +131,10 @@ const AdminLogin = () => {
               borderRadius: 2,
               textTransform: "none",
               fontWeight: 600,
+              backgroundColor: "#1a1a1d", // dark black/gray
+              "&:hover": {
+                backgroundColor: "#000000", // pure black on hover
+              },
             }}
           >
             Login
